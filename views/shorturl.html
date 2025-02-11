@@ -44,7 +44,7 @@
 <body>
     <div class="form-container">
         <h1>URL Shortener</h1>
-        <form hx-post="/redirect" hx-target="#results-list" hx-swap="afterbegin">
+        <form hx-post="/redirect" hx-target="#results-list" hx-swap="innerHTML">
             <div class="input-group">
                 <label for="url">Enter your long URL:</label>
                 <input type="url" id="url" name="url" 
