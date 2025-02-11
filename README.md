@@ -49,11 +49,11 @@ go mod tidy
 make start
 ```
 
-The application will be available at http://localhost:8801/views/
+The application will be available at http://localhost:8801/
 
 ## Usage
 
-1. Open your browser and navigate to http://localhost:8801/views/
+1. Open your browser and navigate to http://localhost:8801/
 2. Enter a long URL in the input field
 3. Click "Shorten URL"
 4. Copy and share the generated short URL
