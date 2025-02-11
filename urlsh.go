@@ -56,7 +56,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	fs := http.FileServer(http.Dir("./"))
+	fs := http.FileServer(http.Dir("./views"))
 
 	mux.Handle("GET /", fs)
 
