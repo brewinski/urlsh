@@ -5,7 +5,7 @@ A simple and efficient URL shortening service built with Go, HTMX, and SQLite. T
 
 ## Demo
 
-https://github.com/brewinski/urlsh/raw/main/example-video.mov
+https://github.com/user-attachments/assets/f6c64d0a-a73e-43eb-8fe2-795a2bc93abc
 
 ## Features
 
