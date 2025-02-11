@@ -2,5 +2,5 @@
 CGO_ENABLED = '1'
 
 [phases.setup]
-nixLibs = ["gcc"]
+nixLibs = ["libgccjit"]
 
