@@ -35,7 +35,7 @@ https://github.com/brewinski/urlsh/raw/main/example-video.mov
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/url-shortener.git
+git clone https://github.com/brewinski/urlsh.git
 cd url-shortener
 ```
 
