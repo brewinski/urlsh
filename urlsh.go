@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
 )
 
 type Storage interface {
@@ -11,8 +12,18 @@ type Storage interface {
 	Set(id, url string) error
 }
 
+func setupLogger(json string) *slog.Logger {
+	if json != "" {
+		logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{}))
+		return logger
+	}
+
+	return slog.Default()
+}
+
 func main() {
-	log := slog.Default()
+	jsonLogger := os.Getenv("URLSH_JSON_LOGGER")
+	log := setupLogger(jsonLogger)
 
 	db, err := NewSqliteDB()
 	if err != nil {
@@ -55,33 +66,33 @@ func main() {
 	mux.HandleFunc("GET /redirect/{id}", func(w http.ResponseWriter, r *http.Request) {
 		shortURL := r.PathValue("id")
 		if shortURL == "" {
-			slog.Error("no id in path")
+			log.Error("no id in path")
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("No short URL provided"))
 			return
 		}
 
-		slog.Info("redirect request received",
+		log.Info("redirect request received",
 			"id", shortURL,
 			"path", r.URL.Path,
 			"full_url", r.URL.String())
 
 		url, err := shortener.Get(shortURL)
 		if err != nil {
-			slog.Error("failed getting url", "err", err, "shortURL", shortURL)
+			log.Error("failed getting url", "err", err, "shortURL", shortURL)
 			w.WriteHeader(http.StatusNotFound)
 			w.Write([]byte("Short URL not found"))
 			return
 		}
 
 		if url == "" {
-			slog.Error("empty url returned", "shortURL", shortURL)
+			log.Error("empty url returned", "shortURL", shortURL)
 			w.WriteHeader(http.StatusNotFound)
 			w.Write([]byte("URL not found"))
 			return
 		}
 
-		slog.Info("redirecting to", "url", url, "from_short_url", shortURL)
+		log.Info("redirecting to", "url", url, "from_short_url", shortURL)
 
 		// Use temporary redirect instead of permanent
 		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
@@ -103,7 +114,7 @@ func main() {
 
 		origin := r.Header.Get("Origin")
 
-		slog.Info("request", "origin", origin, "url", url)
+		log.Info("request", "origin", origin, "url", url)
 
 		encodedUrl, err := shortener.Set(url)
 		if err != nil {
@@ -112,15 +123,15 @@ func main() {
 			return
 		}
 
-		slog.Info("encoded url response", "encodedUrl", encodedUrl)
+		log.Info("encoded url response", "encodedUrl", encodedUrl)
 
 		shortURL := fmt.Sprintf("%s/redirect/%s", origin, encodedUrl)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(shortURL))
 	})
 
-	slog.Info("Staring server...", "port", ":8801")
+	log.Info("Staring server...", "port", ":8801")
 	if err = http.ListenAndServe(":8801", mux); err != nil {
-		slog.Error("Stopping server...", "err", err)
+		log.Error("Stopping server...", "err", err)
 	}
 }
