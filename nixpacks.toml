@@ -1,6 +1,3 @@
-[variables]
-CGO_ENABLED = '1'
-
-[phases.setup]
-nixLibs = ["gcc-unwrapped"]
+[phases.build]
+cmds = ["apt-get update && apt-get install -y gcc && CGO_ENABLED=1 go build -o out ."]
 
